@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🚦 Misi Rebut Jalan Raya • Pandu Puteri</title>
+<style>
+:root{
+  --navy:#17324d;--blue:#76cbe7;--cream:#fff8e7;--pink:#f39ab7;
+  --green:#49bd76;--yellow:#f1bb3c;--red:#df6260;--purple:#8d79c9;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;font-family:"Trebuchet MS",Arial,sans-serif;color:var(--navy);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 10%,#ffffffcc 0 55px,transparent 56px),
+    radial-gradient(circle at 90% 20%,#ffffffaa 0 70px,transparent 71px),
+    linear-gradient(145deg,#d9f6ff 0%,#fff7dc 48%,#e9e2ff 100%);
+}
+body:before{
+  content:"";display:block;height:10px;
+  background:linear-gradient(90deg,#df6260 0 33.3%,#f1bb3c 33.3% 66.6%,#49bd76 66.6%);
+}
+.header{max-width:1050px;margin:auto;padding:15px 14px 5px;text-align:center}
+.brand{display:inline-flex;align-items:center;gap:9px;background:#fff;border:3px solid #263d57;
+  padding:8px 16px;border-radius:999px;box-shadow:0 5px 0 #263d5730;font-weight:900}
+.brand .badge{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#ffe39a;border:2px solid #263d57}
+h1{margin:10px 0 2px;font-size:clamp(27px,6vw,48px);color:#164f75;text-shadow:2px 2px #fff}
+.subtitle{font-weight:900;margin-bottom:10px}
+.wrap{max-width:1050px;margin:auto;padding:10px 14px 25px}
+.turn{
+  background:#fff;border:3px solid var(--blue);border-radius:20px;padding:12px;
+  text-align:center;font-weight:900;font-size:18px;box-shadow:0 5px 0 #4d9dbb40
+}
+.score{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:11px 0}
+.score span{background:#fff;border:2px solid #d8e5ed;border-radius:15px;padding:8px 13px;font-weight:900}
+.score span.active{border-color:#efb72e;background:#fff1b7}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.q{
+  position:relative;border:3px solid #fff;border-radius:23px;padding:16px 8px;min-height:138px;
+  color:#fff;font-weight:900;box-shadow:0 6px 0 #17324d30;cursor:pointer;
+  touch-action:manipulation;overflow:hidden
+}
+.q:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#ffffff2b,transparent 50%);pointer-events:none}
+.q.easy{background:linear-gradient(145deg,#53c77d,#2ea763)}
+.q.med{background:linear-gradient(145deg,#f5c94d,#d79d18)}
+.q.hard{background:linear-gradient(145deg,#ea706c,#ca454b)}
+.q:disabled{opacity:.27;filter:grayscale(1);cursor:not-allowed;box-shadow:none}
+.num{font-size:34px;line-height:1}.lvl{font-size:14px;margin-top:5px}.pts{font-size:18px;margin-top:8px}
+.signal{position:absolute;right:10px;top:10px;width:18px;display:grid;gap:3px}
+.signal i{height:5px;border-radius:9px;background:#ffffff70}.signal i:first-child{background:#ffddd9}
+.note{text-align:center;font-weight:800;font-size:14px;margin-top:12px}
+.footer{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pill{background:#fff;border:2px solid #e3d5a5;border-radius:999px;padding:7px 12px;font-weight:800}
+
+.modal{display:none;position:fixed;inset:0;background:#102b3ddd;align-items:center;justify-content:center;padding:12px;z-index:10}
+.box{
+  background:linear-gradient(145deg,#fff,#fff8e8);border:4px solid #fff;border-radius:28px;
+  padding:20px;max-width:820px;width:100%;max-height:94vh;overflow:auto;
+  box-shadow:0 15px 50px #0006
+}
+.badge{display:inline-block;color:#fff;padding:8px 13px;border-radius:13px;font-weight:900}
+.question{font-size:clamp(20px,4.5vw,31px);font-weight:900;line-height:1.3;margin:15px 0}
+.opt{
+  display:block;width:100%;text-align:left;border:3px solid #d3e2ea;background:#fff;
+  border-radius:16px;padding:14px;margin:9px 0;font-weight:800;cursor:pointer;
+  touch-action:manipulation
+}
+.opt:hover{background:#f1fbff}.opt:disabled{cursor:default}
+.fb{display:none;background:#edf8fb;border-radius:15px;padding:13px;font-weight:800;margin-top:12px}
+.actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:12px}
+.act{border:0;border-radius:15px;padding:12px 17px;background:#126f9e;color:#fff;font-weight:900;cursor:pointer}
+.act.steal{background:#d95b68}
+.stealBox{
+  display:none;background:#fff0f1;border:3px dashed #df6260;border-radius:18px;
+  padding:12px;margin-top:12px;text-align:center
+}
+.stealTitle{font-size:20px;font-weight:900;color:#bd3d4c}
+.stealButtons{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:9px}
+.stealBtn{border:0;border-radius:13px;padding:11px 14px;background:#fff;border:2px solid #df6260;font-weight:900;cursor:pointer}
+.stealBtn:disabled{opacity:.35}
+.reveal{display:none;background:#fff4c6;border:2px solid #edc04b;border-radius:14px;padding:12px;margin-top:10px;font-weight:900}
+.finalScore{display:grid;gap:8px}
+.finalScore div{background:#fff;border:2px solid #dce7ed;border-radius:14px;padding:11px;font-weight:900}
+@media(max-width:650px){
+  .board{grid-template-columns:repeat(3,1fr);gap:8px}
+  .q{min-height:110px;padding:12px 5px}.num{font-size:28px}.pts{font-size:14px}
+  .lvl{font-size:12px}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="brand"><span class="badge">🧭</span> PANDU PUTERI • MISI KESELAMATAN</div>
+  <h1>🚦 MISI: REBUT JALAN RAYA 🚦</h1>
+  <div class="subtitle">Lihat • Fikir • Rebut • Pilih Tindakan Selamat</div>
+</div>
+
+<div class="wrap">
+  <div class="turn" id="turn"></div>
+  <div class="score" id="score"></div>
+  <div class="board" id="board"></div>
+  <p class="note">🟢 MUDAH = 1 markah &nbsp; • &nbsp; 🟡 SEDERHANA = 2 markah &nbsp; • &nbsp; 🔴 SUKAR = 3 markah</p>
+  <div class="footer">
+    <div class="pill">🎀 Pandu Puteri</div>
+    <div class="pill">🚦 Keselamatan Jalan Raya</div>
+    <div class="pill">🔊 Bunyi Interaktif</div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+ <div class="box">
+   <div id="badge" class="badge"></div>
+   <div id="question" class="question"></div>
+   <div id="opts"></div>
+   <div id="fb" class="fb"></div>
+   <div id="reveal" class="reveal"></div>
+   <div id="stealBox" class="stealBox">
+      <div class="stealTitle">🚨 PELUANG REBUT!</div>
+      <div>Guru boleh pilih <b>mana-mana kumpulan lain</b> untuk menjawab.</div>
+      <div class="stealButtons" id="stealButtons"></div>
+   </div>
+   <div class="actions" id="actions"></div>
+ </div>
+</div>
+
+<script>
+const Q=[
+[1,1,"Mudah","Kamu mahu melintas di lintasan pejalan kaki. Sebuah motosikal masih bergerak dari arah lain. Apakah tindakan paling selamat?",["Terus melintas","Berlari melintas","Berhenti dan tunggu sehingga selamat","Menutup mata dan melintas"],2,"Kita perlu melihat keadaan trafik dan menunggu sehingga benar-benar selamat."],
+[2,1,"Mudah","Lampu isyarat berwarna merah. Apakah tindakan penunggang motosikal?",["Berhenti","Mempercepatkan motosikal","Terus bergerak","Membunyikan hon dan bergerak"],0,"Lampu merah menunjukkan pengguna jalan raya perlu berhenti."],
+[3,1,"Mudah","Sebelum bergerak dengan motosikal, tali topi keledar belum diikat. Apakah tindakan yang betul?",["Terus bergerak","Tanggalkan topi keledar","Pakai selepas bergerak","Ikat topi keledar dengan kemas dahulu"],3,"Topi keledar perlu dipakai dengan betul dan diikat dengan kemas sebelum bergerak."],
+[4,2,"Sederhana","Sebuah kereta berhenti di lintasan, tetapi motosikal masih bergerak dari arah bertentangan. Apakah tindakan kamu?",["Tunggu sehingga keadaan selamat","Terus melintas","Berlari melintas","Melintas sambil menggunakan telefon"],0,"Walaupun sebuah kereta berhenti, masih ada kenderaan bergerak. Tunggu sehingga selamat."],
+[5,2,"Sederhana","Lampu bertukar hijau, tetapi sebuah kenderaan masih melintasi persimpangan. Apakah tindakan paling selamat?",["Terus bergerak","Bunyikan hon dan terus bergerak","Tunggu sehingga kenderaan itu melepasi persimpangan","Memecut"],2,"Lampu hijau membenarkan pergerakan apabila keadaan selamat. Perhatikan keadaan sekeliling."],
+[6,2,"Sederhana","Seorang penumpang berkata, “Saya tak perlu pakai tali pinggang sebab perjalanan dekat.” Apakah tindakan yang betul?",["Setuju","Pakai hanya apabila nampak polis","Memakai tali pinggang sebelum kereta bergerak","Pakai selepas kereta bergerak"],2,"Keselamatan perlu diutamakan sepanjang perjalanan, termasuk perjalanan yang dekat."],
+[7,3,"Sukar","Kamu berada di lintasan. Kereta berhenti, tetapi motosikal dari arah bertentangan masih bergerak. Berdasarkan formula LIHAT → FIKIR → KENAL PASTI RISIKO → PILIH TINDAKAN, apakah pilihan terbaik?",["Terus melintas kerana kereta sudah berhenti","Lihat trafik, kenal pasti risiko dan tunggu sehingga selamat","Berlari","Melintas sambil melihat telefon"],1,"Lihat keseluruhan keadaan, kenal pasti risiko dan pilih tindakan paling selamat."],
+[8,3,"Sukar","Lampu sudah hijau. Namun, sebuah kenderaan masih bergerak melalui persimpangan. Apakah keputusan paling bijak?",["Tunggu, perhatikan kenderaan dan bergerak apabila selamat","Terus bergerak kerana lampu hijau","Memecut","Bunyikan hon lalu terus bergerak"],0,"Pengguna bijak melihat keadaan sekeliling dan tidak terburu-buru."],
+[9,3,"Sukar","Seorang pembonceng memakai topi keledar tetapi tidak mengikatnya kerana perjalanan dekat. Apakah penilaian paling tepat?",["Selamat kerana topi sudah dipakai","Selamat jika motosikal perlahan","Tidak mengapa jika jalan tidak sibuk","Tidak selamat kerana topi perlu dipakai dengan betul dan diikat kemas"],3,"Topi keledar perlu dipakai dengan betul dan diikat dengan kemas."]
+];
+
+const groups=["Kumpulan 1","Kumpulan 2","Kumpulan 3"];
+let turn=0, used=new Set(), score=[0,0,0], cur=null, answeringGroup=0, wrongGroups=new Set();
+
+const audioCtx=()=>window.AudioContext?new AudioContext():null;
+function beep(freq,dur=.12,type="sine",vol=.045){
+  try{let c=audioCtx(); if(!c)return; let o=c.createOscillator(),g=c.createGain();
+  o.type=type;o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(c.destination);
+  o.start();g.gain.exponentialRampToValueAtTime(.001,c.currentTime+dur);o.stop(c.currentTime+dur)}catch(e){}
+}
+function soundStart(){beep(523,.09);setTimeout(()=>beep(659,.09),100);setTimeout(()=>beep(784,.15),200)}
+function soundCorrect(){beep(659,.1);setTimeout(()=>beep(784,.12),100);setTimeout(()=>beep(1047,.18),220)}
+function soundWrong(){beep(220,.16,"sawtooth");setTimeout(()=>beep(165,.2,"sawtooth"),150)}
+function soundSteal(){beep(440,.1);setTimeout(()=>beep(660,.1),110);setTimeout(()=>beep(880,.16),220)}
+function soundClick(){beep(420,.06)}
+
+function render(){
+ document.getElementById("turn").innerHTML="🎀 <b>"+groups[turn]+"</b> — pilih satu misi!";
+ document.getElementById("score").innerHTML=score.map((s,i)=>`<span class="${i===turn?'active':''}">${groups[i]}: ${s} markah</span>`).join("");
+ let b=document.getElementById("board");b.innerHTML="";
+ Q.forEach(x=>{
+   let z=document.createElement("button");z.className="q "+(x[1]==1?"easy":x[1]==2?"med":"hard");z.disabled=used.has(x[0]);
+   z.innerHTML=`<div class="signal"><i></i><i></i><i></i></div><div class="num">${x[0]}</div><div class="lvl">${x[2]}</div><div class="pts">+${x[1]} MARKAH</div>`;
+   z.onclick=()=>{soundClick();openQ(x)};b.appendChild(z);
+ });
+}
+function openQ(x){
+ cur=x;answeringGroup=turn;wrongGroups=new Set([answeringGroup]);
+ document.getElementById("badge").textContent=x[2].toUpperCase()+" • "+x[1]+" MARKAH";
+ document.getElementById("badge").style.background=x[1]==1?"#45b96b":x[1]==2?"#e7b52b":"#df5955";
+ document.getElementById("question").textContent=x[3];
+ let o=document.getElementById("opts");o.innerHTML="";
+ x[4].forEach((a,i)=>{let z=document.createElement("button");z.className="opt";z.textContent=String.fromCharCode(65+i)+". "+a;z.onclick=()=>answer(i,answeringGroup);o.appendChild(z)});
+ document.getElementById("fb").style.display="none";
+ document.getElementById("reveal").style.display="none";
+ document.getElementById("stealBox").style.display="none";
+ document.getElementById("actions").innerHTML="";
+ document.getElementById("modal").style.display="flex";
+ soundStart();
+}
+function disableOptions(){document.querySelectorAll(".opt").forEach(z=>z.disabled=true)}
+function answer(i,g){
+ disableOptions();
+ let ok=i===cur[5];
+ let f=document.getElementById("fb");f.style.display="block";
+ if(ok){
+   score[g]+=cur[1];f.textContent="🎉 BETUL! "+cur[6];soundCorrect();
+   used.add(cur[0]);
+   let z=document.createElement("button");z.className="act";z.textContent="Tutup & Teruskan";z.onclick=nextTurn;
+   document.getElementById("actions").appendChild(z);
+ }else{
+   f.textContent="❌ Belum tepat. Kumpulan lain boleh REBUT!";
+   soundWrong();
+   showSteal();
+ }
+}
+function showSteal(){
+ let box=document.getElementById("stealBox"),sb=document.getElementById("stealButtons");
+ box.style.display="block";sb.innerHTML="";
+ groups.forEach((name,i)=>{
+   if(wrongGroups.has(i))return;
+   let z=document.createElement("button");z.className="stealBtn";z.textContent="🎀 "+name;
+   z.onclick=()=>{soundSteal();chooseSteal(i)};sb.appendChild(z);
+ });
+ let r=document.createElement("button");r.className="act steal";r.textContent="🚨 Buka Jawapan";
+ r.onclick=()=>revealAnswer();
+ document.getElementById("actions").innerHTML="";document.getElementById("actions").appendChild(r);
+}
+function chooseSteal(g){
+ answeringGroup=g;wrongGroups.add(g);
+ document.getElementById("stealBox").style.display="none";
+ document.getElementById("fb").style.display="none";
+ let o=document.getElementById("opts");o.innerHTML="";
+ cur[4].forEach((a,i)=>{let z=document.createElement("button");z.className="opt";z.textContent=String.fromCharCode(65+i)+". "+a;z.onclick=()=>answer(i,g);o.appendChild(z)});
+ document.getElementById("actions").innerHTML="";
+ document.getElementById("turn").innerHTML="🚨 Peluang rebut: <b>"+groups[g]+"</b>";
+}
+function revealAnswer(){
+ disableOptions();used.add(cur[0]);
+ let r=document.getElementById("reveal");r.style.display="block";
+ r.innerHTML="💡 <b>Jawapan:</b> "+String.fromCharCode(65+cur[5])+". "+cur[4][cur[5]]+"<br><br>"+cur[6];
+ document.getElementById("actions").innerHTML="";
+ let z=document.createElement("button");z.className="act";z.textContent="Tutup & Teruskan";z.onclick=nextTurn;document.getElementById("actions").appendChild(z);
+}
+function nextTurn(){
+ document.getElementById("modal").style.display="none";
+ if(used.size===9){final();return}
+ turn=(turn+1)%3;render();
+}
+function final(){
+ document.getElementById("modal").style.display="flex";
+ document.getElementById("badge").textContent="🏁 MISI SELESAI";document.getElementById("badge").style.background="#126f9e";
+ document.getElementById("question").textContent="Tahniah, semua misi jalan raya telah selesai! 🎀";
+ document.getElementById("opts").innerHTML='<div class="finalScore">'+score.map((s,i)=>`<div>🎀 ${groups[i]} — ${s} / 18 markah</div>`).join("")+'</div>';
+ document.getElementById("fb").style.display="block";document.getElementById("fb").textContent="Guru boleh membuat rumusan bersama murid berdasarkan strategi LIHAT → FIKIR → KENAL PASTI RISIKO → PILIH TINDAKAN.";
+ document.getElementById("reveal").style.display="none";document.getElementById("stealBox").style.display="none";
+ let z=document.createElement("button");z.className="act";z.textContent="Main Semula";z.onclick=()=>{used.clear();score=[0,0,0];turn=0;document.getElementById("modal").style.display="none";render()};document.getElementById("actions").innerHTML="";document.getElementById("actions").appendChild(z);
+ soundCorrect();
+}
+render();
+</script>
+</body></html>
